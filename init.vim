@@ -2,6 +2,11 @@ source ~/.config/nvim/after/plugin/multiple_cursors.vim
 source ~/.config/nvim/after/plugin/linter_fixer.vim
 source ~/.config/nvim/plugins.vim
 
+set background=dark
+set termguicolors
+
+colorscheme base16-eighties
+
 let g:python_highlight_all = 1
 
 runtime macros/matchit.vim
@@ -14,6 +19,17 @@ syntax sync fromstart
 
 " turn off bell on ESC
 set noerrorbells visualbell t_vb=
+
+" Better split switching
+map <C-j> <C-W>j
+map <C-k> <C-W>k
+map <C-h> <C-W>h
+map <C-l> <C-W>l
+
+" Better buffer switching.
+nnoremap <C-x> :bnext<CR>
+nnoremap <C-z> :bprev<CR>
+nnoremap <C-q> :bd<CR>
 
 " misc
 set nostartofline
@@ -88,7 +104,7 @@ set autoindent smartindent tabstop=2 shiftwidth=2 softtabstop=2 expandtab
 set whichwrap+=<,>,h,l,[,]
 
 " make columns outside textwidth blanked out
-let &colorcolumn=join(range(&textwidth+1,&textwidth+1),",")
+"let &colorcolumn=join(range(&textwidth+1,&textwidth+1),",")
 
 " Sensible side scrolling, makes it like other editors.
 " Reduce scroll jump with cursor goes off the screen.
@@ -124,21 +140,18 @@ augroup basics_autocmd
   autocmd BufEnter * let &titlestring=expand("%:t") | set title
   autocmd VimResized * let &previewheight=(winheight(0) * 1/3)
 
-  autocmd WinEnter * if &previewwindow | setlocal nonumber norelativenumber colorcolumn=0 statusline='' | endif
+  autocmd WinEnter * if &previewwindow | setlocal nonumber norelativenumber statusline='' | endif
 augroup END
 " }}}
 
 " Key Mappings {{{
 " Reset Leader
 nnoremap <Space> <Nop>
-let mapleader=" "
+let mapleader=","
 
 " Fix my common typos
 command! W w    " write it
 command! QQ qa! " quit I mean it!
-
-" <C-@> is same as <S-Space>
-inoremap <C-@> <C-n>
 
 " Toggle Movements {{{
 " Helper function to use an alternate movement if the first
@@ -222,10 +235,9 @@ nnoremap <expr> gp '`[' . strpart(getregtype(), 0, 1) . '`]'
 let g:netrw_liststyle=3
 let g:netrw_altfile=1
 let g:netrw_winsize=25
-" nnoremap <Leader>n :Lexplore<CR>
-" nnoremap - :exe 'Lexplore' expand('%:h')<CR>
-nnoremap <Leader>n :NERDTreeToggle<CR>
-nnoremap - :NERDTreeFind<CR>
+nmap <C-n> :NERDTreeToggle<CR>
+noremap <Leader>n :NERDTreeToggle<cr>
+noremap <Leader>f :NERDTreeFind<cr>
 " }}}
 
 " Tagbar {{{
@@ -314,12 +326,8 @@ command! -bang QA qa!
 " Faster :ex commands
 nnoremap <C-s> :write<CR>
 inoremap <C-s> <ESC>:write<CR>
-nnoremap <C-q> :close<CR>
 
 " Buffer Stuff
-" Warning: C-n/C-p to move to next/previous buffer. Instead of down/up lines.
-nnoremap <silent> <C-p> :bprevious<CR>
-nnoremap <silent> <C-n> :bnext<CR>
 " Jump out until buffer changes {{{
 function! s:jump_till_next_buffer() abort
   let current_nr = bufnr('%')
@@ -334,8 +342,6 @@ function! s:jump_till_next_buffer() abort
   endwhile
 endfunction
 " [x]-out the current buffer and jump out.
-" nnoremap <silent> <C-x> <C-o>:bdelete! #<CR>
-nnoremap <silent> <C-x> :call <SID>jump_till_next_buffer() <BAR>silent! bd#<CR>
 " }}}
 
 " Populate QuickFix with branch changes
